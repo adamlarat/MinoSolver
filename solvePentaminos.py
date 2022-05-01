@@ -5,7 +5,7 @@ Created on Sat Apr 30 20:17:03 2022
 
 @author: larat
 """
-import pentaminos as p
+import minos as p
 import dlx as dlx
 import numpy as np
 import pylab as plt 
@@ -25,9 +25,9 @@ def encode(mesh):
 
 def findAllPositions(minosSet,grid):
     nCells = grid[0]*grid[1]
-    nMinos = np.shape(minosSet['base'])[0]
+    nMinos = len(minosSet['base'])
     found  = 0
-    nOrientations = np.shape(minosSet['orientations'])[0]
+    nOrientations = len(minosSet['orientations'])
     for i in range(nOrientations):
         yShift = 0
         orientation = minosSet['orientations'][i]
@@ -56,7 +56,7 @@ def findAllPositions(minosSet,grid):
 
 
 if __name__ == '__main__':
-    p5 = p.pentaminos(5)
+    p5 = p.minos(5)
     #grid = (6,10)
     grid = (3,20)
     nCells = grid[0]*grid[1]
