@@ -28,6 +28,7 @@ def findAllPositions(minosSet,grid):
     nMinos = len(minosSet['base'])
     found  = 0
     nOrientations = len(minosSet['orientations'])
+    Y = {}
     for i in range(nOrientations):
         yShift = 0
         orientation = minosSet['orientations'][i]
@@ -35,13 +36,7 @@ def findAllPositions(minosSet,grid):
         position    = np.copy(orientation)  
         while np.max(position[...,0])<grid[0]:
             while np.max(position[...,1])<grid[1]:
-                newPosition = np.zeros(nCells+nMinos,dtype=int)
-                newPosition[np.squeeze(p.toIndices(position,grid[1]))] = 1
-                newPosition[nCells+typ] = 1
-                if found == 0:
-                    mat = np.array([newPosition])
-                else:
-                    mat = np.append(mat,[newPosition],axis=0)
+                Y[found] = [col for col in np.squeeze(p.toIndices(position,grid[1]))] + [nCells+typ,]
                 found           += 1
                 position[...,1] += 1
             yShift  += 1
@@ -49,7 +44,6 @@ def findAllPositions(minosSet,grid):
             
     print("Trouvé %i position"%found)
     # Convert to sets for Internet DLX Algorithm
-    Y = {line: [col for col in np.where(mat[line]==1)[0]] for line in range(np.shape(mat)[0])}
     X = set(range(nCells+nMinos))
     X = {j: set(filter(lambda i: j in Y[i], Y)) for j in X}
     return X,Y
