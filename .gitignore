@@ -1,5 +1,8 @@
 *.bak
 *.png
 .*.swp
+*.o
+*.gch
+*.exe
 __pycache__/*
 Solutions*.txt

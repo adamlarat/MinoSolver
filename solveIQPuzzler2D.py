@@ -63,30 +63,32 @@ def generateSetup(listOfMinos):
     
 if __name__ == '__main__':
     IQSolverMinos = 'FLNPUVWYlnt<'
-    pentaminos    = 'FLNPUVWYZTIX'
-    # mySet = generateSetup(pentaminos)
-    # grid = (3,20)
-    mySet = generateSetup(IQSolverMinos)
-    grid = (5,11)
+    pentaminos    = 'FILNPTUVWXYZ' #'FLNPUVWYZTIX'
+    mySet = generateSetup(pentaminos)
+    # order         = 'FYPXTWNZLUVI'
+    # mySet = generateSetup(order)
+    grid = (3,20)
+    # mySet = generateSetup(IQSolverMinos)
+    # grid = (5,11)
     print("Taille du set : ",mySet['size'])
     nCells = grid[0]*grid[1]
     assert nCells == mySet['size']
     X,Y = findAllPositions(mySet,grid)
      
-    # counter = 0
-    # file = open('Solutions_'+mySet['minosList']+'_Grid%02ix%02i.txt'%(grid[0],grid[1]),'w')
-    # for solution in dlx.solve(X,Y):
-    #     counter += 1
-    #     if counter % 1000 == 0:
-    #         print("%06i solution"%counter)    
-    #     sol_mat = np.zeros(nCells,dtype=int)
-    #     for position in solution:
-    #         piece = Y[position]
-    #         sol_mat[piece[:-1]] = piece[-1]-nCells+1
-    #     file.write(encode(sol_mat)+'\n')
-    #     # plt.figure()
-    #     # plt.pcolor(sol_mat.reshape(grid),edgecolor='k',linewidth=2,cmap=cmap,norm=norm)
-    #     # plt.show()
-    # file.close()
-    # print("Found %i solutions !"%counter)
+    counter = 0
+    file = open('Solutions_'+mySet['minosList']+'_Grid%02ix%02i.txt'%(grid[0],grid[1]),'w')
+    for solution in dlx.solve(X,Y):
+        counter += 1
+        if counter % 1000 == 0:
+            print("%06i solution"%counter)    
+        sol_mat = np.zeros(nCells,dtype=int)
+        for position in solution:
+            piece = Y[position]
+            sol_mat[piece[:-1]] = piece[-1]-nCells+1
+        file.write(encode(sol_mat)+'\n')
+        # plt.figure()
+        # plt.pcolor(sol_mat.reshape(grid),edgecolor='k',linewidth=2,cmap=cmap,norm=norm)
+        # plt.show()
+    file.close()
+    print("Found %i solutions !"%counter)
 
