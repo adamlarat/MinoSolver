@@ -9,6 +9,9 @@ debug: EXEC=minos-debug.exe
 release: exec
 release: FLAG=-O3 -Wall
 release: EXEC=minos-release.exe
+fast: exec
+fast: FLAG=-O3 -Wall -D FAST
+fast: EXEC=minos-fast.exe
 myMain.o: myMain.cpp myDLX.hpp mino.hpp
 	$(CC) $(FLAG) -c myMain.cpp
 mino.o: mino.hpp mino.cpp

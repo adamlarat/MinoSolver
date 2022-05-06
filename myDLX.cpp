@@ -137,10 +137,12 @@ int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth){
   }
   cover(head,c);
   dlx_cell *r = c->D,*j;
+#ifndef FAST
   if (depth == 0) {
     cout<<"First level has "<<s<<" nodes\n";
     s = 1;
   }
+#endif
   while(r != c){
     solution[depth] = r;
     j = r->R;
@@ -150,9 +152,11 @@ int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth){
     }
     nSol = solve(head,solution,depth+1);
     nSolTot += nSol;
+#ifndef FAST
     if(depth == 0){
       cout<<" * Level "<<s++<<": "<<nSol<<" solutions\n";
     }
+#endif
     solution[depth] = nullptr;
     j = r->L;
     while(j != r){
