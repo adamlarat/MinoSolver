@@ -9,13 +9,13 @@ debug: EXEC=minos-debug.exe
 release: exec
 release: FLAG=-O3 -Wall
 release: EXEC=minos-release.exe
-main.o: main.cpp dlx.hpp mino.hpp
-	$(CC) $(FLAG) -c main.cpp
+myMain.o: myMain.cpp myDLX.hpp mino.hpp
+	$(CC) $(FLAG) -c myMain.cpp
 mino.o: mino.hpp mino.cpp
 	$(CC) $(FLAG) -c mino.cpp
-dlx.o: dlx.hpp dlx.cpp
-	$(CC) $(FLAG) -c dlx.cpp
-exec: mino.o dlx.o main.o
-	$(CC) $(FLAG) main.o mino.o dlx.o -o $(EXEC)
+myDLX.o: myDLX.hpp myDLX.cpp
+	$(CC) $(FLAG) -c myDLX.cpp
+exec: mino.o myDLX.o myMain.o
+	$(CC) $(FLAG) myMain.o mino.o myDLX.o -o $(EXEC)
 clean:
 	rm minos*.exe *.o

@@ -96,7 +96,8 @@ vector<vector<int>> mino::getOrientationsAsIndices(){
   return allOrientations;
 }
 
-void mino::computeAllPositions(int *grid,vector<vector<int>> &positions,int minoIndex){
+int mino::computeAllPositions(int *grid,vector<vector<int>> &positions,int minoIndex){
+  int counter = 0;
   for(int i=0;i<nOrientations;i++){
     vector<vector<int>> orientation = orientations[i];
     int yShift = 0;
@@ -106,9 +107,11 @@ void mino::computeAllPositions(int *grid,vector<vector<int>> &positions,int mino
       while(xMax(orientation)<grid[1]){
         for(uint j=0;j<orientation.size();j++) {
           position[j] = grid[1]*orientation[j][0]+orientation[j][1];
+          counter++;
           orientation[j][1]++;
         }
         positions.push_back(position);
+        counter++;
       }
       yShift++;
       orientation = orientations[i];
@@ -117,7 +120,7 @@ void mino::computeAllPositions(int *grid,vector<vector<int>> &positions,int mino
       }
     }
   }
-  return;
+  return counter;
 }
 
 /* Transformations of a mino */
