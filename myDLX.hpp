@@ -13,7 +13,10 @@ public:
   ~dlx_cell(){};
 };
 
-void buildStructure(vector<vector<int>> &Y,dlx_cell *head,int nCells,int nMinos);
+dlx_cell * buildStructure(vector<vector<int>> &Y);
 void cover(dlx_cell *head,dlx_cell *c);
 void uncover(dlx_cell *head,dlx_cell *c);
 int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth);
+
+/* GLOBAL VARIABLES */
+extern int nCells,nMinos;

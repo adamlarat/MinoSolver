@@ -5,6 +5,11 @@
 #include <string.h>
 #include <iomanip>
 
+/* GLOBAL VARIABLES */
+char* minosChar;
+int nMinos = 0;
+vector<int> grid;
+int nCells = 1;
 map<char,vector<int>> minos = {
     //Pentaminos
     {'F', {1,6,7,8,12}},
@@ -47,35 +52,34 @@ int main(int argc,char *argv[]){
     cout<<"Come back later!"<<endl;
     return -3;
   }
-  char* minosChar = argv[1];
-  int nMinos      = strlen(minosChar);
+  ::minosChar = argv[1];
+  ::nMinos      = strlen(::minosChar);
   char* gridReader= strtok(argv[2],"x");
-  vector<int> grid;
-  int nCells = 1;
+  int gridSize;
   while(gridReader != NULL){
-    int gridSize = stoi(gridReader);
-    grid.push_back(gridSize);
-    nCells *= gridSize;
+    gridSize = stoi(gridReader);
+    ::grid.push_back(gridSize);
+    ::nCells *= gridSize;
     gridReader = strtok(NULL,"x");
   }
-  cout<<"Arguments: "<<minosChar<<" "<<grid<<endl;
-  cout<<" * nMinos: "<<nMinos<<endl;
-  cout<<" * nCells: "<<nCells<<endl;
+#ifndef FAST
+  cout<<"Arguments: "<<::minosChar<<" "<<::grid<<endl;
+  cout<<" * nMinos: "<<::nMinos<<endl;
+  cout<<" * nCells: "<<::nCells<<endl;
+#endif
 
   /* Comupute the structures */
   vector<mino> minoArray;
   vector<vector<int>> Y;
-  int sizeY = 0;
-  for(int i=0;i<nMinos;i++){
-    mino nextMino(minos[minosChar[i]]);
+  for(int i=0;i<::nMinos;i++){
+    mino nextMino(::minos[::minosChar[i]]);
     minoArray.push_back(nextMino);
-    sizeY += nextMino.computeAllPositions(grid,Y,i+nCells);
+    nextMino.computeAllPositions(::grid,Y,i+::nCells);
   }
-  dlx_cell head[sizeY+nMinos+nCells+1];
-  buildStructure(Y,head,nCells,nMinos);
+  dlx_cell *head = buildStructure(Y);
 
   /* Compute all the solutions */
-  vector<dlx_cell *> solutions(nMinos);
+  vector<dlx_cell *> solutions(::nMinos);
   config = clock();
   int nSolutions = solve(head,solutions,0);
   fin    = clock();
@@ -92,5 +96,7 @@ int main(int argc,char *argv[]){
   cout<<"------------------------------------\n";
   cout<<" * Total         : "<<fixed<<double(fin-debut)/double(CLOCKS_PER_SEC)<<setprecision(3);
   cout<<" s\n";
+
+  delete[] head;
   return 0;
 }

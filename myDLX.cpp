@@ -3,13 +3,16 @@
 #include <vector>
 #include <iostream>
 
-void buildStructure(vector<vector<int>> &Y,dlx_cell *head,int nCells,int nMinos){
+dlx_cell * buildStructure(vector<vector<int>> &Y){
+  int sizeY = 0;
+  for(vector<int> subY : Y) sizeY += subY.size();
+  dlx_cell *head = new dlx_cell[sizeY+::nCells+::nMinos+1];
   // Set head
   dlx_cell *cell_ptr = head;
-  cell_ptr->value = -nCells;
+  cell_ptr->value = -(::nCells+::nMinos);
   cell_ptr->R     = cell_ptr+1;
   // Now setting column headers
-  for(int i=0;i<nCells+nMinos;i++){
+  for(int i=0;i<::nCells+::nMinos;i++){
     cell_ptr++;
     cell_ptr->value = 0;
     cell_ptr->L     = cell_ptr-1;
@@ -42,7 +45,7 @@ void buildStructure(vector<vector<int>> &Y,dlx_cell *head,int nCells,int nMinos)
     }
     cell_ptr += rowSize;
   }
-  return;
+  return head;
 }
 
 void cover(dlx_cell *head,dlx_cell *c){
@@ -80,15 +83,14 @@ void uncover(dlx_cell *head,dlx_cell *c){
 
 void outputSolution(dlx_cell *head, vector<dlx_cell*> &solution){
   dlx_cell *cell_ptr = head->R;
-  int nCells = -head->value;
-  vector<int> out(nCells);
+  vector<int> out(::nCells);
   int mino_type=-1;
   for(uint i=0;i<solution.size();i++){
     cell_ptr = solution[i];
-    while(cell_ptr->value<nCells) cell_ptr = cell_ptr->R;
-    mino_type = cell_ptr->value-nCells+1;
+    while(cell_ptr->value<::nCells) cell_ptr = cell_ptr->R;
+    mino_type = cell_ptr->value-::nCells+1;
     cell_ptr = cell_ptr->R;
-    while(cell_ptr->value<nCells) {
+    while(cell_ptr->value<::nCells) {
       out[cell_ptr->value]=mino_type;
       cell_ptr = cell_ptr->R;
     }
@@ -162,7 +164,7 @@ int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth){
     }
     r = r->D;
   }
-  
+
   /* uncover chosen column and leave */
   uncover(head,c);
   return nSolTot;
