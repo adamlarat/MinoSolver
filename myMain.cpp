@@ -56,8 +56,8 @@ int main(){
   */
 
 
-  string minoList = "FILNPTUVWXYZ";
-  int grid[2] = {3,20};
+  string minoList = "FLNPUVWYlnt<"; //"FILNPTUVWXYZ";
+  int grid[2] = {5,11}; //{6,10}; //{3,20};
   int nCells = grid[0]*grid[1];
   int nMinos = minoList.size();
   vector<mino> minoArray;
@@ -71,6 +71,7 @@ int main(){
   dlx_cell head[sizeY+nMinos+nCells+1];
   buildStructure(Y,head,nCells,nMinos);
   vector<dlx_cell *> solutions(nMinos);
-  solve(head,solutions,0);
+  int nSolutions = solve(head,solutions,0);
+  cout<<"Found "<<nSolutions<<" solutions in total!\n";
   return 0;
 }

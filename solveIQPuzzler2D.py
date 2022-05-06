@@ -67,7 +67,7 @@ if __name__ == '__main__':
     mySet = generateSetup(pentaminos)
     # order         = 'FYPXTWNZLUVI'
     # mySet = generateSetup(order)
-    grid = (3,20)
+    grid = (6,10) #(3,20)
     # mySet = generateSetup(IQSolverMinos)
     # grid = (5,11)
     print("Taille du set : ",mySet['size'])
