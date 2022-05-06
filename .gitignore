@@ -6,4 +6,6 @@
 *.exe
 __pycache__/*
 Solutions*.txt
+Solutions*.bin
 output*.txt
+RGBColors.txt

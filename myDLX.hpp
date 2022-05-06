@@ -1,4 +1,7 @@
 #include <vector>
+#include <string.h>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -20,3 +23,5 @@ int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth);
 
 /* GLOBAL VARIABLES */
 extern int nCells,nMinos;
+extern ofstream outFile;
+extern string outFormat;

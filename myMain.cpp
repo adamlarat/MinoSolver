@@ -2,7 +2,7 @@
 #include "tools.hpp"
 #include "myDLX.hpp"
 #include <map>
-#include <string.h>
+#include <string>
 #include <iomanip>
 
 /* GLOBAL VARIABLES */
@@ -10,6 +10,8 @@ char* minosChar;
 int nMinos = 0;
 vector<int> grid;
 int nCells = 1;
+ofstream outFile;
+string outFormat;
 map<char,vector<int>> minos = {
     //Pentaminos
     {'F', {1,6,7,8,12}},
@@ -47,7 +49,7 @@ int main(int argc,char *argv[]){
   /* Read arguments */
   if(argc<3){
     cout<<"Welcome to this puzzle solver!"<<endl;
-    cout<<" Syntax : mino.exe minosChar (gridLines)x(gridCols) [filename output_format]"<<endl;
+    cout<<" Syntax : mino.exe minosChar (gridLines)x(gridCols) [filename]"<<endl;
     cout<<" Example: mino.exe 'FILNPTUVWXYZ' 3x20"<<endl;
     cout<<"Come back later!"<<endl;
     return -3;
@@ -67,6 +69,15 @@ int main(int argc,char *argv[]){
   cout<<" * nMinos: "<<::nMinos<<endl;
   cout<<" * nCells: "<<::nCells<<endl;
 #endif
+  if(argc>3){
+    string filename(argv[3]);
+    string extension = filename.substr(filename.find_last_of(".")+1);
+    ::outFormat = (extension=="bin")?"bin":"txt";
+    ::outFile.open(&filename[0],(extension=="bin")?ofstream::binary:ofstream::out);
+#ifndef FAST
+    cout<<" * Filename: "<<filename<<", extension: "<<extension<<endl;
+#endif
+  }
 
   /* Comupute the structures */
   vector<mino> minoArray;
@@ -97,6 +108,7 @@ int main(int argc,char *argv[]){
   cout<<" * Total         : "<<fixed<<double(fin-debut)/double(CLOCKS_PER_SEC)<<setprecision(3);
   cout<<" s\n";
 
+  ::outFile.close();
   delete[] head;
   return 0;
 }

@@ -1,7 +1,5 @@
 #include "myDLX.hpp"
 #include "tools.hpp"
-#include <vector>
-#include <iostream>
 
 dlx_cell * buildStructure(vector<vector<int>> &Y){
   int sizeY = 0;
@@ -95,11 +93,19 @@ void outputSolution(dlx_cell *head, vector<dlx_cell*> &solution){
       cell_ptr = cell_ptr->R;
     }
   }
-  for(uint i=0;i<out.size();i++){
-    if(out[i]<10) cout<<out[i];
-    else cout<<char(97+out[i]-10);
+  if(outFormat=="bin"){
+    for(uint i=0;i<out.size();i+=4){
+      ::outFile<<(uint8_t)(out[i+2]*16+out[i+3]);
+      ::outFile<<(uint8_t)(out[i]*16+out[i+1]);
+    }
   }
-  cout<<endl;
+  else{
+    for(uint i=0;i<out.size();i++){
+      if(out[i]<10) ::outFile<<out[i];
+      else ::outFile<<char(97+out[i]-10);
+    }
+    ::outFile<<endl;
+  }
 }
 
 int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth){
@@ -108,7 +114,9 @@ int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth){
 
   /* if graph is void, output and return one found solution */
   if(cell_ptr == head){
-    //outputSolution(head,solution);
+#ifndef FAST
+    if (::outFile.is_open()) outputSolution(head,solution);
+#endif
     return 1;
   }
 
