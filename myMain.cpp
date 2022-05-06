@@ -3,6 +3,7 @@
 #include "myDLX.hpp"
 #include <map>
 #include <string.h>
+#include <iomanip>
 
 map<char,vector<int>> minos = {
     //Pentaminos
@@ -34,6 +35,9 @@ map<char,vector<int>> minos = {
 };
 
 int main(int argc,char *argv[]){
+
+  clock_t debut,config,fin;
+  debut = clock();
 
   /* Read arguments */
   if(argc<3){
@@ -72,7 +76,19 @@ int main(int argc,char *argv[]){
 
   /* Compute all the solutions */
   vector<dlx_cell *> solutions(nMinos);
+  config = clock();
   int nSolutions = solve(head,solutions,0);
+  fin    = clock();
+  cout<<"------------------------------------\n";
   cout<<"Found "<<nSolutions<<" solutions in total!\n";
+  cout<<"------------------------------------\n";
+  cout<<"Temps d'exécution:\n";
+  cout<<" * Configuration : "<<fixed<<double(config-debut)/double(CLOCKS_PER_SEC)<<setprecision(3);
+  cout<<" s\n";
+  cout<<" * Résolution    : "<<fixed<<double(fin-config)/double(CLOCKS_PER_SEC)<<setprecision(3);
+  cout<<" s\n";
+  cout<<"------------------------------------\n";
+  cout<<" * Total         : "<<fixed<<double(fin-debut)/double(CLOCKS_PER_SEC)<<setprecision(3);
+  cout<<" s\n";
   return 0;
 }

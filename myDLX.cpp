@@ -118,7 +118,7 @@ void outputSolution(dlx_cell *head, vector<dlx_cell*> &solution){
 }
 
 int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth){
-  int nSol = 0;
+  int nSolTot = 0,nSol;
   dlx_cell *cell_ptr=head->R;
   if(cell_ptr == head){
     //outputSolution(head,solution);
@@ -148,7 +148,8 @@ int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth){
       cover(head,j->C);
       j = j->R;
     }
-    nSol += solve(head,solution,depth+1);
+    nSol = solve(head,solution,depth+1);
+    nSolTot += nSol;
     if(depth == 0){
       cout<<" * Level "<<s++<<": "<<nSol<<" solutions\n";
     }
@@ -161,5 +162,5 @@ int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth){
     r = r->D;
   }
   uncover(head,c);
-  return nSol;
+  return nSolTot;
 }
