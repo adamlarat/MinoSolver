@@ -79,6 +79,8 @@ int main(int argc,char *argv[]){
   config = clock();
   int nSolutions = solve(head,solutions,0);
   fin    = clock();
+
+  /* Final output */
   cout<<"------------------------------------\n";
   cout<<"Found "<<nSolutions<<" solutions in total!\n";
   cout<<"------------------------------------\n";

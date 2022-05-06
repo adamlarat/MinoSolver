@@ -77,23 +77,6 @@ void uncover(dlx_cell *head,dlx_cell *c){
   c->R->L = c;
   c->L->R = c;
 }
-void outputMat(dlx_cell *head,vector<dlx_cell*> &solution){
-  dlx_cell *cell_ptr,*c;
-  cout<<"[";
-  int i = 0;
-  cell_ptr = solution[i++];
-  while(cell_ptr){
-    cout<<"["<<cell_ptr->value;
-    c = cell_ptr->R;
-    while(c != cell_ptr){
-      cout<<","<<c->value;
-      c = c->R;
-    }
-    cout<<"]";
-    cell_ptr = solution[i++];
-  }
-  cout<<"]"<<endl;
-}
 
 void outputSolution(dlx_cell *head, vector<dlx_cell*> &solution){
   dlx_cell *cell_ptr = head->R;
@@ -120,11 +103,14 @@ void outputSolution(dlx_cell *head, vector<dlx_cell*> &solution){
 int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth){
   int nSolTot = 0,nSol;
   dlx_cell *cell_ptr=head->R;
+
+  /* if graph is void, output and return one found solution */
   if(cell_ptr == head){
     //outputSolution(head,solution);
-    //outputMat(head,solution);
     return 1;
   }
+
+  /* search for the smallest column */
   int s = cell_ptr->value;
   dlx_cell *c = cell_ptr;
   cell_ptr = cell_ptr->R;
@@ -135,21 +121,29 @@ int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth){
     }
     cell_ptr = cell_ptr->R;
   }
-  cover(head,c);
-  dlx_cell *r = c->D,*j;
 #ifndef FAST
   if (depth == 0) {
     cout<<"First level has "<<s<<" nodes\n";
     s = 1;
   }
 #endif
+
+  /* cover the smallest column */
+  cover(head,c);
+  /* loop over the column to run over all possibilities */
+  dlx_cell *r = c->D,*j;
   while(r != c){
+    /* choose position r for solution */
     solution[depth] = r;
+
+    /* cover all the column corresponding to the
+       cells occupied by r */
     j = r->R;
     while(j != r){
       cover(head,j->C);
       j = j->R;
     }
+    /* look for next position */
     nSol = solve(head,solution,depth+1);
     nSolTot += nSol;
 #ifndef FAST
@@ -157,6 +151,9 @@ int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth){
       cout<<" * Level "<<s++<<": "<<nSol<<" solutions\n";
     }
 #endif
+
+    /* undo everything in order to put graph into
+       its initial state */
     solution[depth] = nullptr;
     j = r->L;
     while(j != r){
@@ -165,6 +162,8 @@ int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth){
     }
     r = r->D;
   }
+  
+  /* uncover chosen column and leave */
   uncover(head,c);
   return nSolTot;
 }
