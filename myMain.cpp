@@ -2,6 +2,7 @@
 #include "tools.hpp"
 #include "myDLX.hpp"
 #include <map>
+#include <string.h>
 
 map<char,vector<int>> minos = {
     //Pentaminos
@@ -32,44 +33,44 @@ map<char,vector<int>> minos = {
     {'.', {0}}
 };
 
-int main(){
-  /*
-  for(auto minoList = minos.begin();minoList != minos.end();minoList++){
-    mino myMino(minoList->second);
-    cout<<"Mino "<<minoList->first<<": has "<<myMino.number()<<" different orientations\n";
-    cout<<"Principal representant: "<<myMino.getIndices()<<endl;
-    vector<vector<int>> allOrientations = myMino.getOrientationsAsIndices();
-    for(int i=0;i<myMino.number();i++){
-      cout<<" * Orientation "<<i<<": "<<allOrientations[i]<<endl;
-    }
+int main(int argc,char *argv[]){
+
+  /* Read arguments */
+  if(argc<3){
+    cout<<"Welcome to this puzzle solver!"<<endl;
+    cout<<" Syntax : mino.exe minosChar (gridLines)x(gridCols) [filename output_format]"<<endl;
+    cout<<" Example: mino.exe 'FILNPTUVWXYZ' 3x20"<<endl;
+    cout<<"Come back later!"<<endl;
+    return -3;
   }
-  */
-  /* DEBUG!!!
-  vector<vector<int>> mat{{2,4,5},{0,3,6},{1,2,5},{0,3},{1,6},{3,4,6}};
-  int matSize = 16;
-  int nCols = 7, nRows = 6;
-  dlx_cell tete[matSize+nCols+1];
-  buildStructure(mat,tete,nCols,0);
-  vector<dlx_cell *> sols(nRows);
-  solve(tete,sols,0);
-  return 0;
-  */
+  char* minosChar = argv[1];
+  int nMinos      = strlen(minosChar);
+  char* gridReader= strtok(argv[2],"x");
+  vector<int> grid;
+  int nCells = 1;
+  while(gridReader != NULL){
+    int gridSize = stoi(gridReader);
+    grid.push_back(gridSize);
+    nCells *= gridSize;
+    gridReader = strtok(NULL,"x");
+  }
+  cout<<"Arguments: "<<minosChar<<" "<<grid<<endl;
+  cout<<" * nMinos: "<<nMinos<<endl;
+  cout<<" * nCells: "<<nCells<<endl;
 
-
-  string minoList = "FLNPUVWYlnt<"; //"FILNPTUVWXYZ";
-  int grid[2] = {5,11}; //{6,10}; //{3,20};
-  int nCells = grid[0]*grid[1];
-  int nMinos = minoList.size();
+  /* Comupute the structures */
   vector<mino> minoArray;
   vector<vector<int>> Y;
   int sizeY = 0;
   for(int i=0;i<nMinos;i++){
-    mino nextMino(minos[minoList[i]]);
+    mino nextMino(minos[minosChar[i]]);
     minoArray.push_back(nextMino);
     sizeY += nextMino.computeAllPositions(grid,Y,i+nCells);
   }
   dlx_cell head[sizeY+nMinos+nCells+1];
   buildStructure(Y,head,nCells,nMinos);
+
+  /* Compute all the solutions */
   vector<dlx_cell *> solutions(nMinos);
   int nSolutions = solve(head,solutions,0);
   cout<<"Found "<<nSolutions<<" solutions in total!\n";

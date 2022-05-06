@@ -10,6 +10,6 @@ std::ostream& operator<<(std::ostream& out, const std::vector<T>& vect) {
    for(i=0;i<vect.size()-1;i++){
      out<<vect[i]<<", ";
    }
-   out<<vect[i]<<"]\n";
+   out<<vect[i]<<"]";
    return out;
 }

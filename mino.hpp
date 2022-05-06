@@ -33,6 +33,6 @@ public:
   void computeOrientations();
   /* given a grid, compute all the positions of all the orientations
      within the grid */
-  int computeAllPositions(int *grid,vector<vector<int>> &positions,int minoIndex);
+  int computeAllPositions(vector<int> grid,vector<vector<int>> &positions,int minoIndex);
 
 };

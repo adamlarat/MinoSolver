@@ -96,7 +96,7 @@ vector<vector<int>> mino::getOrientationsAsIndices(){
   return allOrientations;
 }
 
-int mino::computeAllPositions(int *grid,vector<vector<int>> &positions,int minoIndex){
+int mino::computeAllPositions(vector<int> grid,vector<vector<int>> &positions,int minoIndex){
   int counter = 0;
   for(int i=0;i<nOrientations;i++){
     vector<vector<int>> orientation = orientations[i];

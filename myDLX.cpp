@@ -150,7 +150,7 @@ int solve(dlx_cell *head,vector<dlx_cell *> &solution,int depth){
     }
     nSol += solve(head,solution,depth+1);
     if(depth == 0){
-      cout<<"Level "<<s++<<": "<<nSol<<" solutions\n";
+      cout<<" * Level "<<s++<<": "<<nSol<<" solutions\n";
     }
     solution[depth] = nullptr;
     j = r->L;
