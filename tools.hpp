@@ -13,3 +13,7 @@ std::ostream& operator<<(std::ostream& out, const std::vector<T>& vect) {
    out<<vect[i]<<"]";
    return out;
 }
+
+#ifndef ZERO
+  #define ZERO 1.0e-6
+#endif

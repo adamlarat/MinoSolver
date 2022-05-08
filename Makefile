@@ -21,4 +21,4 @@ myDLX.o: myDLX.hpp myDLX.cpp
 exec: mino.o myDLX.o myMain.o
 	$(CC) $(FLAG) myMain.o mino.o myDLX.o -o $(EXEC)
 clean:
-	rm minos*.exe *.o
+	rm -f minos*.exe *.o *.gch

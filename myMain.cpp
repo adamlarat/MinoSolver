@@ -4,11 +4,11 @@
 #include <map>
 #include <string>
 #include <iomanip>
+#include "grid.hpp"
 
 /* GLOBAL VARIABLES */
 char* minosChar;
 int nMinos = 0;
-vector<int> grid;
 int nCells = 1;
 ofstream outFile;
 string outFormat;
@@ -49,13 +49,16 @@ int main(int argc,char *argv[]){
   /* Read arguments */
   if(argc<3){
     cout<<"Welcome to this puzzle solver!"<<endl;
-    cout<<" Syntax : mino.exe minosChar (gridLines)x(gridCols) [filename]"<<endl;
-    cout<<" Example: mino.exe 'FILNPTUVWXYZ' 3x20"<<endl;
+    cout<<" Syntax : mino.exe minosChar pyramideN|gridXxY[xZ] [filename]"<<endl;
+    cout<<" Example: mino.exe 'FILNPTUVWXYZ' grid3x20"<<endl;
     cout<<"Come back later!"<<endl;
     return -3;
   }
   ::minosChar = argv[1];
   ::nMinos      = strlen(::minosChar);
+  string gridString(argv[2]);
+  vector<vector<float>> grid = gridReader(gridString,::nCells);
+  /*
   char* gridReader= strtok(argv[2],"x");
   int gridSize;
   while(gridReader != NULL){
@@ -64,8 +67,9 @@ int main(int argc,char *argv[]){
     ::nCells *= gridSize;
     gridReader = strtok(NULL,"x");
   }
+  */
 #ifndef FAST
-  cout<<"Arguments: "<<::minosChar<<" "<<::grid<<endl;
+  cout<<"Arguments: "<<::minosChar<<" "<<argv[2]<<endl;
   cout<<" * nMinos: "<<::nMinos<<endl;
   cout<<" * nCells: "<<::nCells<<endl;
 #endif
@@ -82,11 +86,29 @@ int main(int argc,char *argv[]){
   /* Comupute the structures */
   vector<mino> minoArray;
   vector<vector<int>> Y;
+  int minosSize = 0;
   for(int i=0;i<::nMinos;i++){
     mino nextMino(::minos[::minosChar[i]]);
+    minosSize += nextMino.size();
+    nextMino.computeAllPositions(grid,Y,i+::nCells);
     minoArray.push_back(nextMino);
-    nextMino.computeAllPositions(::grid,Y,i+::nCells);
+#ifndef FAST
+    cout<<"Mino : "<<minosChar[i]<<" with "<<nextMino.size()<<" cells\n";
+    cout<<" * Principal representant: "<<nextMino.getIndices()<<endl;
+    cout<<" * nOrientations2d        : "<<nextMino.getOrientations2d()<<endl;
+    cout<<" * nOrientations3dStraight: "<<nextMino.getOrientations3dStraight()<<endl;
+    cout<<" * nOrientations3dDiagged : "<<nextMino.getOrientations3dDiagged()<<endl;
+#endif
   }
+  if(minosSize != ::nCells){
+    cout<<"You are using the wrong number of minos, or of wrong size!\n";
+    cout<<" * grid number of cells: "<<::nCells<<endl;
+    cout<<" * sum of minos sizes  : "<<minosSize<<endl;
+    return -1;
+  }
+#ifndef FAST
+  cout<<"Found "<<Y.size()<<" different positions covering the grid\n";
+#endif
   dlx_cell *head = buildStructure(Y);
 
   /* Compute all the solutions */

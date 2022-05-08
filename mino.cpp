@@ -1,30 +1,47 @@
 #include "mino.hpp"
 #include <algorithm> //std::sort
 #include <math.h> // pow()
-#include <assert.h> // assert()
 #include <iostream> //cout
+#include "tools.hpp"
 
 /* Transformations of a mino */
-vector<vector<int>> & shift(vector<vector<int>> & coords);
-vector<vector<int>> & reorder(vector<vector<int>> &coords);
-int xMax(vector<vector<int>> & coords);
-int yMax(vector<vector<int>> & coords);
-/* Horizontal symetry */
-vector<vector<int>> hSymetry(vector<vector<int>> & mino_coords);
-/* Vertical symetry */
-vector<vector<int>> vSymetry(vector<vector<int>> & mino_coords);
-/* x,y coordinates swap. First bissectrice symetry */
-vector<vector<int>> xSymetry(vector<vector<int>> & mino_coords);
+vector<vector<float>> & shift(vector<vector<float>> & coords);
+vector<vector<float>> & reorder(vector<vector<float>> &coords);
+float dirMax(const vector<vector<float>> & coords,int dir);
+float dirMin(const vector<vector<float>> & coords,int dir);
+/* (Ox,Oz) symetry */
+vector<vector<float>> hSymetry(const vector<vector<float>> & mino_coords);
+/* (Oy,Oz) symetry */
+vector<vector<float>> vSymetry(const vector<vector<float>> & mino_coords);
+/* x,y coordinates swap. (Ox+Oy,Oz) symetry */
+vector<vector<float>> xSymetry(const vector<vector<float>> & mino_coords);
+/* Ox π/2 rotation */
+vector<vector<float>> xRotation(const vector<vector<float>> & mino_coords);
+/* Oy π/2 rotation */
+vector<vector<float>> yRotation(const vector<vector<float>> & mino_coords);
+/* (Ox+Oy) π/2 rotation */
+vector<vector<float>> xpyRotation(const vector<vector<float>> & mino_coords);
+/* (Ox-Oy) π/2 rotation */
+vector<vector<float>> xmyRotation(const vector<vector<float>> & mino_coords);
 /* function pointer */
-typedef vector<vector<int>> (*trans_ptr)(vector<vector<int>> &);
-trans_ptr transformations[3] {&xSymetry,&hSymetry,&vSymetry};
+typedef vector<vector<float>> (*trans_ptr)(const vector<vector<float>> &);
+const int n2d = 3;
+trans_ptr transformations2d[n2d] {&xSymetry,&hSymetry,&vSymetry};
+const int n3d = 2;
+trans_ptr transformations3dStraight[n3d] {&xRotation,&yRotation};
+trans_ptr transformations3dDiagged[n3d] {&xpyRotation,&xmyRotation};
+template<typename T> bool vectorOrder(const vector<vector<T>> &v1,const vector<vector<T>> &v2);
+template<typename T> bool cellOrder(const vector<T> &c1,const vector<T> &c2);
+bool areEqual(const vector<vector<float>> &v1, const vector<vector<float>> &v2);
+int trouveCell(const vector<float> &coords,const vector<vector<float>> &grid);
+bool notIn(const vector<vector<vector<float>>> &os, const vector<vector<float>> &newOs);
 
 /* Constructor */
 mino::mino(vector<int> _indices, int _d) :
 n(_indices.size()),
 d(_d),
 indices(_indices),
-coordinates(n,vector<int>(d))
+coordinates(n,vector<float>(d))
 {
   updateCoordinates();
   computeOrientations();
@@ -33,8 +50,9 @@ coordinates(n,vector<int>(d))
 /* update mino coordinates from its indices (given in grid (n+1)x(n+1)) */
 void mino::updateCoordinates() {
   for(int i=0;i<n;i++){
-    coordinates[i][0] = indices[i]/(n+1);
-    coordinates[i][1] = indices[i]%(n+1);
+    coordinates[i][0] = indices[i]%(n+1); // x
+    coordinates[i][1] = indices[i]/(n+1); // y
+    coordinates[i][2] = 0.0;              // z
   }
   return;
 }
@@ -43,153 +61,279 @@ void mino::updateCoordinates() {
    Indices are given in an (n+1)x(n+1) grid */
 void mino::updateIndices() {
   for(int i=0;i<n;i++){
-    indices[i] = (n+1)*coordinates[i][0]+coordinates[i][1];
+    assert(fabs(coordinates[i][2])<ZERO);
+    indices[i] = (n+1)*coordinates[i][1]+coordinates[i][0];
   }
   return;
 }
 
-/* compute all the different orientation of the n-mino */
+/* compute all the different orientations of the n-mino */
 void mino::computeOrientations() {
-  // First find all possible orientations of the mino
-  vector<vector<vector<int>>> _orientations;
-  _orientations.push_back(coordinates);
-  for(int s=0;s<3;s++){
-    for(uint i=0;i<_orientations.size();i++) {
-      vector<vector<int>> newTrans = transformations[s](_orientations[i]);
-      bool isNew = true;
-      for(uint j=0;j<_orientations.size();j++) {
-        if(_orientations[j] == newTrans) {isNew=false;break;}
-      }
-      if(isNew){
-        _orientations.push_back(newTrans);
+  // First find all possible 2D orientations of the mino
+  orientations2d.push_back(coordinates);
+  nOrientations2d++;
+  vector<vector<float>> newTrans;
+  for(int s=0;s<n2d;s++){
+    for(uint i=0;i<orientations2d.size();i++) {
+      newTrans = transformations2d[s](orientations2d[i]);
+      if(notIn(orientations2d,newTrans)) {
+        orientations2d.push_back(newTrans);
+        nOrientations2d++;
       }
     }
   }
-  nOrientations = _orientations.size();
   // Next sort orientations uniquely
-  sort(_orientations.begin(),_orientations.end(),
-    [](vector<vector<int>> pos1,vector<vector<int>> pos2){
-      assert(pos1.size() == pos2.size());
-      int n = pos1.size();
-      int sum1=0,sum2=0;
-      for(uint i=0;i<pos1.size();i++){
-        sum1 += pow(2,(pos1[i][0]*(n+1)+pos1[i][1]));
-        sum2 += pow(2,(pos2[i][0]*(n+1)+pos2[i][1]));
-      }
-      return sum1<sum2;
-    }
-  );
-  orientations = _orientations;
-  // Finally store the unique representant
-  coordinates = orientations[0];
+  sort(orientations2d.begin(),orientations2d.end(),vectorOrder<float>);
+  // Store the unique representant and update indices
+  coordinates = orientations2d[0];
   updateIndices();
+  // Compute the 3d possible orientations
+  for(uint i=0;i<orientations2d.size();i++) {
+    for(int s=0;s<n3d;s++){
+      newTrans = transformations3dStraight[s](orientations2d[i]);
+      if(notIn(orientations2d,newTrans) &
+         notIn(orientations3dStraight,newTrans) &
+         notIn(orientations3dDiagged,newTrans)) {
+        orientations3dStraight.push_back(newTrans);
+        nOrientations3dStraight++;
+      }
+      newTrans = transformations3dDiagged[s](orientations2d[i]);
+      if(notIn(orientations2d,newTrans) &
+         notIn(orientations3dStraight,newTrans) &
+         notIn(orientations3dDiagged,newTrans)) {
+        orientations3dDiagged.push_back(newTrans);
+        nOrientations3dDiagged++;
+      }
+    }
+  }
+  // and sort them
+  sort(orientations3dStraight.begin(),orientations3dStraight.end(),vectorOrder<float>);
+  sort(orientations3dDiagged.begin(),orientations3dDiagged.end(),vectorOrder<float>);
   return;
 }
 
-vector<vector<int>> mino::getOrientationsAsIndices(){
-  vector<vector<int>> allOrientations(nOrientations,vector<int>(n));
-  for(int i=0;i<nOrientations;i++){
-    for(int j=0;j<n;j++){
-      allOrientations[i][j] = orientations[i][j][0]*(n+1)+orientations[i][j][1];
-    }
+void mino::computeAllPositions(vector<vector<float>> &grid,vector<vector<int>> &positions,int minoIndex){
+  // First sort the grid by lexicographical order and get its extreme values
+  sort(grid.begin(),grid.end(),cellOrder<float>);
+  int gLines = grid.size(),gCols = grid[0].size();
+  vector<vector<float>> grid_t(gCols,vector<float>(gLines));
+  for(int i=0;i<gLines;i++){
+    for(int j=0;j<gCols;j++) grid_t[j][i] = grid[i][j];
   }
-  return allOrientations;
-}
+  for(int i=0;i<gCols;i++) {
+    sort(grid_t[i].begin(),grid_t[i].end());
+    auto last = unique(grid_t[i].begin(),grid_t[i].end());
+    grid_t[i].erase(last,grid_t[i].end());
+  } // grid_t now contains all the possible values for x, y an z, in order
+  // The search of possible position will be done in the box-enveloppe of the grid
 
-void mino::computeAllPositions(vector<int> grid,vector<vector<int>> &positions,int minoIndex){
-  for(int i=0;i<nOrientations;i++){
-    vector<vector<int>> orientation = orientations[i];
-    int yShift = 0;
-    vector<int> position(n+1);
-    position[n] = minoIndex;
-    while(yMax(orientation)<grid[0]){
-      while(xMax(orientation)<grid[1]){
-        for(uint j=0;j<orientation.size();j++) {
-          position[j] = grid[1]*orientation[j][0]+orientation[j][1];
-          orientation[j][1]++;
+  vector<vector<float>> orientation;
+  vector<int> position(n+1);
+  position[n] = minoIndex;
+  vector<float> coords(3);
+  vector<float> shift(3);
+  int j;
+  contribute(-1);// mise-à-zéro des compteurs
+  for(int orien=0;orien<number();orien++){
+    orientation = getOrientation(orien);
+    for(uint iz=0;iz<grid_t[2].size();iz++){
+      shift[2] = grid_t[2][iz]-orientation[0][2];
+      for(uint iy=0;iy<grid_t[1].size();iy++){
+        shift[1] = grid_t[1][iy]-orientation[0][1];
+        for(uint ix=0;ix<grid_t[0].size();ix++){
+          shift[0] = grid_t[0][ix]-orientation[0][0];
+          for(j=0;j<n;j++){
+            for(d=0;d<3;d++) coords[d] = orientation[j][d]+shift[d];
+            position[j] = trouveCell(coords,grid);
+            if(position[j]<0) break;
+          }
+          if(j==n) {
+            positions.push_back(position);
+            contribute(orien);
+          }
         }
-        positions.push_back(position);
-      }
-      yShift++;
-      orientation = orientations[i];
-      for(uint j=0;j<orientation.size();j++) {
-        orientation[j][0] += yShift;
       }
     }
   }
-  return;
+}
+
+/* this function finds the index of a cell within a grid.
+   if cell is not found, return -1 */
+int trouveCell(const vector<float> &coords,const vector<vector<float>> &grid){
+  int gridLen = grid.size();
+  for(int i=0;i<gridLen;i++){
+    if(fabs(coords[2]-grid[i][2])<ZERO){
+      if(fabs(coords[1]-grid[i][1])<ZERO){
+        if(fabs(coords[0]-grid[i][0])<ZERO){
+          return i;
+        }
+      }
+    }
+  }
+  return -1;
+}
+
+/* return the maximal value of a vector of vector on the dir column */
+float dirMax(const vector<vector<float>> &coords,int dir){
+  float ans = coords[0][dir];
+  for(uint i=1;i<coords.size();i++) ans = max(ans,coords[i][dir]);
+  return ans;
+}
+
+/* return the minimal value of a vector of vector on the dir column */
+float dirMin(const vector<vector<float>> &coords,int dir){
+  float ans = coords[0][dir];
+  for(uint i=1;i<coords.size();i++) ans = min(ans,coords[i][dir]);
+  return ans;
 }
 
 /* Transformations of a mino */
-vector<vector<int>> & shift(vector<vector<int>> & coords){
+// Shift back to smallest positive numbers
+vector<vector<float>> & shift(vector<vector<float>> & coords){
   int n = coords.size();
-  int xMin=n,yMin=n;
+  float xMin = dirMin(coords,0);
+  float yMin = dirMin(coords,1);
+  float zMin = dirMin(coords,2);
   for(int i=0;i<n;i++){
-    xMin = coords[i][1]<xMin?coords[i][1]:xMin;
-    yMin = coords[i][0]<yMin?coords[i][0]:yMin;
+    coords[i][0] -= xMin;
+    coords[i][1] -= yMin;
+    coords[i][2] -= zMin;
   }
-  for(int i=0;i<n;i++){
-    coords[i][1] -= xMin;
-    coords[i][0] -= yMin;
-  }
+  return coords;
+}
+// sort cells by lexicographical order
+vector<vector<float>> & reorder(vector<vector<float>> &coords){
+  sort(coords.begin(),coords.end(),cellOrder<float>);
   return coords;
 }
 
-vector<vector<int>> & reorder(vector<vector<int>> &coords){
-  sort(coords.begin(),coords.end(),
-    [](vector<int> c1,vector<int> c2){
-      if(c1[0]==c2[0]) {
-        return c1[1]<c2[1];
-      }
-      else {
-        return c1[0]<c2[0];
-      }
-    }
-  );
-  return coords;
-}
 /* Horizontal symetry */
-vector<vector<int>> hSymetry(vector<vector<int>> & mino_coords){
+vector<vector<float>> hSymetry(const vector<vector<float>> & mino_coords){
   int n = mino_coords.size();
-  vector<vector<int>> hMino(mino_coords);
+  vector<vector<float>> hMino(mino_coords);
   for(int i=0;i<n;i++) {
-    hMino[i][0] = n-hMino[i][0];
+    hMino[i][1] = -hMino[i][1];
   }
   return reorder(shift(hMino));
 }
 /* Vertical symetry */
-vector<vector<int>> vSymetry(vector<vector<int>> & mino_coords){
+vector<vector<float>> vSymetry(const vector<vector<float>> & mino_coords){
   int n = mino_coords.size();
-  vector<vector<int>> vMino(mino_coords);
+  vector<vector<float>> vMino(mino_coords);
   for(int i=0;i<n;i++) {
-    vMino[i][1] = n-vMino[i][1];
+    vMino[i][0] = -vMino[i][0];
   }
   return reorder(shift(vMino));
 }
 /* x,y coordinates swap. First bissectrice symetry */
-vector<vector<int>> xSymetry(vector<vector<int>> & mino_coords){
+vector<vector<float>> xSymetry(const vector<vector<float>> & mino_coords){
   int n = mino_coords.size();
-  vector<vector<int>> xMino(mino_coords);
+  vector<vector<float>> xMino(mino_coords);
   for(int i=0;i<n;i++) {
-    int inter   = xMino[i][1];
-    xMino[i][1] = xMino[i][0];
-    xMino[i][0] = inter;
+    xMino[i][0] = mino_coords[i][1];
+    xMino[i][1] = mino_coords[i][0];
   }
   return reorder(shift(xMino));
 }
 
-int xMax(vector<vector<int>> &coords){
-  int m=0;
-  for(vector<int> p : coords){
-    m = m<p[1]?p[1]:m;
+/* Ox π/2 rotation */
+vector<vector<float>> xRotation(const vector<vector<float>> & mino_coords){
+  int n = mino_coords.size();
+  vector<vector<float>> xMino(mino_coords);
+  for(int i=0;i<n;i++) {
+    xMino[i][1] = -mino_coords[i][2];
+    xMino[i][2] =  mino_coords[i][1];
   }
-  return m;
+  return reorder(shift(xMino));
+}
+/* Oy π/2 rotation */
+vector<vector<float>> yRotation(const vector<vector<float>> & mino_coords){
+  int n = mino_coords.size();
+  vector<vector<float>> xMino(mino_coords);
+  for(int i=0;i<n;i++) {
+    xMino[i][0] =  mino_coords[i][2];
+    xMino[i][2] = -mino_coords[i][0];
+  }
+  return reorder(shift(xMino));
+}
+/* (Ox+Oy) π/2 rotation */
+vector<vector<float>> xpyRotation(const vector<vector<float>> & mino_coords){
+  int n = mino_coords.size();
+  float s = 0.5*sqrt(2.0);
+  vector<vector<float>> xMino(mino_coords);
+  for(int i=0;i<n;i++) {
+    xMino[i][0] = 0.5*( mino_coords[i][0]+mino_coords[i][1])-s*mino_coords[i][2];
+    xMino[i][1] = 0.5*( mino_coords[i][0]+mino_coords[i][1])+s*mino_coords[i][2];
+    xMino[i][2] =  s *( mino_coords[i][0]-mino_coords[i][1]);
+  }
+  return reorder(shift(xMino));
+}
+/* (Ox-Oy) π/2 rotation */
+vector<vector<float>> xmyRotation(const vector<vector<float>> & mino_coords){
+  int n = mino_coords.size();
+  float s = 0.5*sqrt(2.0);
+  vector<vector<float>> xMino(mino_coords);
+  for(int i=0;i<n;i++) {
+    xMino[i][0] = 0.5*( mino_coords[i][0]-mino_coords[i][1])-s*mino_coords[i][2];
+    xMino[i][1] = 0.5*(-mino_coords[i][0]+mino_coords[i][1])-s*mino_coords[i][2];
+    xMino[i][2] =  s *( mino_coords[i][0]+mino_coords[i][1]);
+  }
+  return reorder(shift(xMino));
 }
 
-int yMax(vector<vector<int>> &coords){
-  int m=0;
-  for(vector<int> p : coords){
-    m = m<p[0]?p[0]:m;
+template<typename T>
+bool vectorOrder(const vector<vector<T>> &v1,const vector<vector<T>> &v2) {
+  assert(v1.size() == v2.size());
+  assert(v1[0].size() == v2[0].size());
+  int n = v1.size(), d = v1[0].size();
+  for(int i=n-1;i>=0;i--){
+    for(int j=d-1;j>=0;j--){
+      if(fabs(v1[i][j]-v2[i][j])>ZERO){
+        return v1[i][j]<v2[i][j];
+      }
+    }
   }
-  return m;
+  cout<<"The two vectors are equal\n";
+  cout<<v1<<endl;
+  cout<<v2<<endl;
+  assert(false);
+}
+
+template<typename T>
+bool cellOrder(const vector<T> &c1,const vector<T> &c2) {
+  assert(c1.size() == c2.size());
+  int d = c1.size();
+  for(int j=d-1;j>=0;j--){
+    if(fabs(c1[j]-c2[j])>ZERO){
+      return c1[j]<c2[j];
+    }
+  }
+  cout<<"The two cells are equal\n";
+  cout<<c1<<endl;
+  cout<<c2<<endl;
+  assert(false);
+}
+
+template<typename T>
+void transpose(const vector<vector<T>> &vec){
+  int n = vec.size(),p=vec[0].size();
+}
+
+bool areEqual(const vector<vector<float>> &v1, const vector<vector<float>> &v2){
+  assert(v1.size()==v2.size());
+  int n = v1.size();
+  for(int i=0;i<n;i++){
+    assert(v1[i].size()==v2[i].size());
+    for(uint j=0;j<v1[i].size();j++){
+      if(fabs(v1[i][j]-v2[i][j])>ZERO) return false;
+    }
+  }
+  return true;
+}
+
+bool notIn(const vector<vector<vector<float>>> &os, const vector<vector<float>> &newOs){
+  for(uint j=0;j<os.size();j++) {
+    if(areEqual(os[j],newOs)) return false;
+  }
+  return true;
 }
