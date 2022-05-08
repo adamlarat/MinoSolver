@@ -7,7 +7,6 @@ Created on Fri May  6 21:00:57 2022
 """
 
 import sys,os
-import numpy as np
 
 toColorMap = {
  '1':"\033[48;2;230;137;0mF",
@@ -23,6 +22,7 @@ toColorMap = {
  'b':"\033[48;2;0;133;86mt",
  'c':"\033[48;2;115;190;250m<"
 }
+"""
 toNumberMap = {
  'F':'1',
  'L':'2',
@@ -37,8 +37,9 @@ toNumberMap = {
  't':'b',
  '<':'c',
 }
+"""
 
-def toNumbers(chars):
+def toNumbers(chars,toNumberMap):
     numbers = ''
     for c in chars: 
         if c in toNumberMap:
@@ -71,7 +72,9 @@ if len(sys.argv) < 3:
     exit()
 
 filename = sys.argv[1]
-pattern  = toNumbers(sys.argv[2])
+minosCharList = filename.split('_')[1]
+toNumberMap = {c:hex(enum+1)[-1] for enum,c in enumerate(minosCharList)}
+pattern  = toNumbers(sys.argv[2],toNumberMap)
 gridTok  = filename.split('_')[-1].split('.')[0].split('x')[0]
 gridType = ''.join(filter(str.isalpha, gridTok))
 gridSize = int(''.join(filter(str.isdigit, gridTok)))

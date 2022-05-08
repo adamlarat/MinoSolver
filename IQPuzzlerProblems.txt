@@ -1,4 +1,6 @@
 
 # 3D
-81 = "llUUUltUnUlttFnLtFFFLLLLFYWn*YYWnYPPWYPPPVW*V*WVVV*****"
-82 = "VN
+081 = "llUUUltUnUlttFnLtFFFLLLLFYWn*YYWnYPPWYPPPVW*V*WVVV*****"
+082 = "VNPPYnPPPYnnVYY<nFtY<<tttVNUUFVNULFUULLLLVN*F*N*F******"
+083 = "Y*nntYnnttYYVFtY<PFF<<FFV**llUU*lUPVlUUPV***P***PV*****"
+105 = "VVVPPVF*PPVFFPtFFYttYYYYt********L***LLLL**************"
