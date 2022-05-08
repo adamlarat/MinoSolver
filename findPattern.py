@@ -7,6 +7,7 @@ Created on Fri May  6 21:00:57 2022
 """
 
 import sys,os
+import numpy as np
 
 toColorMap = {
  '1':"\033[48;2;230;137;0mF",
@@ -52,6 +53,17 @@ def toColor(numbers):
         chain += toColorMap[c]
     return chain+"\033[00;0m"
 
+def splitLine(line,gridType,gridSize):
+    if gridType.lower() == "grid":
+        return [line[i:i+gridSize] for i in range(0,len(line),gridSize)]
+    if gridType.lower() == "pyramide":
+        lengths = [item for subliste in [i*[i,] for i in range(gridSize,0,-1)] for item in subliste]
+        cumul = [(elem,int(sum(lengths[:i]))) for i,elem in enumerate(lengths)]
+        lines = [line[i:i+j] for j,i in cumul]
+        return [lines[i] for i in range(len(lengths)-1,-1,-1)]
+    print("wrong grid type : ",gridType,gridSize)
+    exit()
+
 if len(sys.argv) < 3:
     print("You need to provide a pattern")
     print(" Syntax : python findPattern.py filename pattern")
@@ -60,11 +72,13 @@ if len(sys.argv) < 3:
 
 filename = sys.argv[1]
 pattern  = toNumbers(sys.argv[2])
-gridLen  = int(filename.split('x')[1].split('.')[0])
+gridTok  = filename.split('_')[-1].split('.')[0].split('x')[0]
+gridType = ''.join(filter(str.isalpha, gridTok))
+gridSize = int(''.join(filter(str.isdigit, gridTok)))
 termOut  = os.popen("cat '"+filename+"' | grep -e "+pattern)
 ans      = termOut.readline().strip()
 while ans:
-    lines = [ans[i:i+gridLen] for i in range(0,len(ans),gridLen)]
+    lines = splitLine(ans,gridType,gridSize)
     for line in lines:
         print(toColor(line))
     print("--------------------------------")

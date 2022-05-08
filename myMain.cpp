@@ -87,6 +87,7 @@ int main(int argc,char *argv[]){
   vector<mino> minoArray;
   vector<vector<int>> Y;
   int minosSize = 0;
+  int countPositions = 0;
   for(int i=0;i<::nMinos;i++){
     mino nextMino(::minos[::minosChar[i]]);
     minosSize += nextMino.size();
@@ -94,11 +95,16 @@ int main(int argc,char *argv[]){
     minoArray.push_back(nextMino);
 #ifndef FAST
     cout<<"Mino : "<<minosChar[i]<<" with "<<nextMino.size()<<" cells\n";
-    cout<<" * Principal representant: "<<nextMino.getIndices()<<endl;
-    cout<<" * nOrientations2d        : "<<nextMino.getOrientations2d()<<endl;
-    cout<<" * nOrientations3dStraight: "<<nextMino.getOrientations3dStraight()<<endl;
-    cout<<" * nOrientations3dDiagged : "<<nextMino.getOrientations3dDiagged()<<endl;
+    cout<<" * Principal representant : "<<nextMino.getIndices()<<endl;
+    cout<<" * nOrientations2d        : "<<nextMino.number2d()<<endl;
+    cout<<" * nOrientations3dStraight: "<<nextMino.number3dStraight()<<endl;
+    cout<<" * nOrientations3dDiagged : "<<nextMino.number3dDiagged()<<endl;
+    cout<<" * nPositions2d           : "<<nextMino.nPositions2d<<endl;
+    cout<<" * nPositions3dStraight   : "<<nextMino.nPositions3dStraight<<endl;
+    cout<<" * nPositions3dDiagged    : "<<nextMino.nPositions3dDiagged<<endl;
+    cout<<" * nPositions Totales     : "<<Y.size()-countPositions<<endl;
 #endif
+    countPositions = Y.size();
   }
   if(minosSize != ::nCells){
     cout<<"You are using the wrong number of minos, or of wrong size!\n";

@@ -15,8 +15,8 @@ private:
   vector<vector<vector<float>>> orientations3dDiagged; // with a π/2 (Ox+Oy) rotation
   //vector<vector<int>> *orientations;
   int nOrientations2d=0,nOrientations3dStraight=0,nOrientations3dDiagged=0; // number of different orientations
-  int nPositions2d=0,nPositions3dStraight=0,nPositions3dDiagged=0; // number of different orientations
 public:
+  int nPositions2d=0,nPositions3dStraight=0,nPositions3dDiagged=0; // number of different orientations
   /* constructors and destructor */
   mino() {}
   mino(vector<int> _indices,int _d=3);
@@ -39,7 +39,7 @@ public:
     return orientations3dDiagged[i];
   }
   void contribute(int i){
-    if(i<0){nPositions2d=0;nPositions3dStraight=0;nPositions3dDiagged=0;}
+    if(i<0){nPositions2d=0;nPositions3dStraight=0;nPositions3dDiagged=0;return;}
     assert(i<number());
     if(i<nOrientations2d) {nPositions2d++;return;}
     i -= nOrientations2d;

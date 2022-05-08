@@ -113,45 +113,25 @@ void mino::computeOrientations() {
 }
 
 void mino::computeAllPositions(vector<vector<float>> &grid,vector<vector<int>> &positions,int minoIndex){
-  // First sort the grid by lexicographical order and get its extreme values
-  sort(grid.begin(),grid.end(),cellOrder<float>);
-  int gLines = grid.size(),gCols = grid[0].size();
-  vector<vector<float>> grid_t(gCols,vector<float>(gLines));
-  for(int i=0;i<gLines;i++){
-    for(int j=0;j<gCols;j++) grid_t[j][i] = grid[i][j];
-  }
-  for(int i=0;i<gCols;i++) {
-    sort(grid_t[i].begin(),grid_t[i].end());
-    auto last = unique(grid_t[i].begin(),grid_t[i].end());
-    grid_t[i].erase(last,grid_t[i].end());
-  } // grid_t now contains all the possible values for x, y an z, in order
-  // The search of possible position will be done in the box-enveloppe of the grid
-
   vector<vector<float>> orientation;
   vector<int> position(n+1);
   position[n] = minoIndex;
   vector<float> coords(3);
   vector<float> shift(3);
-  int j;
+  int j,d;
   contribute(-1);// mise-à-zéro des compteurs
   for(int orien=0;orien<number();orien++){
     orientation = getOrientation(orien);
-    for(uint iz=0;iz<grid_t[2].size();iz++){
-      shift[2] = grid_t[2][iz]-orientation[0][2];
-      for(uint iy=0;iy<grid_t[1].size();iy++){
-        shift[1] = grid_t[1][iy]-orientation[0][1];
-        for(uint ix=0;ix<grid_t[0].size();ix++){
-          shift[0] = grid_t[0][ix]-orientation[0][0];
-          for(j=0;j<n;j++){
-            for(d=0;d<3;d++) coords[d] = orientation[j][d]+shift[d];
-            position[j] = trouveCell(coords,grid);
-            if(position[j]<0) break;
-          }
-          if(j==n) {
-            positions.push_back(position);
-            contribute(orien);
-          }
-        }
+    for(uint i=0;i<grid.size();i++){
+      for(d=0;d<3;d++) shift[d] = grid[i][d]-orientation[0][d];
+      for(j=0;j<n;j++){
+        for(d=0;d<3;d++) coords[d] = orientation[j][d]+shift[d];
+        position[j] = trouveCell(coords,grid);
+        if(position[j]<0) break;
+      }
+      if(j==n) {
+        positions.push_back(position);
+        contribute(orien);
       }
     }
   }
