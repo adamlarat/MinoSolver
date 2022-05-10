@@ -4,7 +4,7 @@ FLAG=-Wall -O1
 EXEC=minos.exe
 all: exec
 debug: exec
-debug: FLAG=-Wall -g3 -D DEBUG -D VERBOSE_LEVEL=3
+debug: FLAG=-Wall -g3 -D TRACK -D VERBOSE_LEVEL=3
 debug: EXEC=minos-debug.exe
 release: exec
 release: FLAG=-O3 -Wall

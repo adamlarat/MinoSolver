@@ -1,8 +1,20 @@
+#ifndef GRID_H
+#define GRID_H
+
 #include <vector>
 #include <string>
 #include <math.h>
 
 float s = 0.5*sqrt(2.0);
+
+vector<vector<int>> KnuthExample = {
+  {2,4,5},
+  {0,3,6},
+  {1,2,5},
+  {0,3},
+  {1,6},
+  {3,4,6}
+};
 
 vector<vector<float>> gridReader(string arg_str,int &nCells){
   int i = 0;
@@ -56,3 +68,4 @@ vector<vector<float>> gridReader(string arg_str,int &nCells){
   }
   return grid;
 }
+#endif // GRID_H

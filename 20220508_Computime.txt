@@ -470,4 +470,183 @@ Temps d'exécution:
 ------------------------------------
 
 
+larat@xps13:  [main]  ~/Essai/Pentaminos$ ./minos-release.exe 'FLNPUVWYlnt<' pyramide5 "Solutions_FLNPUVWYlnt<_Pyramide5.txt"
+Arguments: FLNPUVWYlnt< pyramide5
+ * nMinos: 12
+ * nCells: 55
+ * Filename: Solutions_FLNPUVWYlnt<_Pyramide5.txt, extension: txt
+Mino : F with 5 cells
+ * Principal representant : [1, 6, 7, 8, 12]
+ * nOrientations2d        : 8
+ * nOrientations3dStraight: 16
+ * nOrientations3dDiagged : 16
+ * nPositions2d           : 112
+ * nPositions3dStraight   : 0
+ * nPositions3dDiagged    : 64
+ * nPositions Totales     : 176
+Mino : L with 5 cells
+ * Principal representant : [0, 1, 2, 3, 6]
+ * nOrientations2d        : 8
+ * nOrientations3dStraight: 16
+ * nOrientations3dDiagged : 16
+ * nPositions2d           : 88
+ * nPositions3dStraight   : 0
+ * nPositions3dDiagged    : 32
+ * nPositions Totales     : 120
+Mino : N with 5 cells
+ * Principal representant : [1, 2, 3, 6, 7]
+ * nOrientations2d        : 8
+ * nOrientations3dStraight: 16
+ * nOrientations3dDiagged : 16
+ * nPositions2d           : 88
+ * nPositions3dStraight   : 0
+ * nPositions3dDiagged    : 48
+ * nPositions Totales     : 136
+Mino : P with 5 cells
+ * Principal representant : [0, 1, 2, 6, 7]
+ * nOrientations2d        : 8
+ * nOrientations3dStraight: 16
+ * nOrientations3dDiagged : 16
+ * nPositions2d           : 160
+ * nPositions3dStraight   : 0
+ * nPositions3dDiagged    : 116
+ * nPositions Totales     : 276
+Mino : U with 5 cells
+ * Principal representant : [0, 1, 2, 6, 8]
+ * nOrientations2d        : 4
+ * nOrientations3dStraight: 8
+ * nOrientations3dDiagged : 8
+ * nPositions2d           : 80
+ * nPositions3dStraight   : 0
+ * nPositions3dDiagged    : 40
+ * nPositions Totales     : 120
+Mino : V with 5 cells
+ * Principal representant : [0, 1, 2, 6, 12]
+ * nOrientations2d        : 4
+ * nOrientations3dStraight: 8
+ * nOrientations3dDiagged : 8
+ * nPositions2d           : 56
+ * nPositions3dStraight   : 0
+ * nPositions3dDiagged    : 34
+ * nPositions Totales     : 90
+Mino : W with 5 cells
+ * Principal representant : [1, 2, 6, 7, 12]
+ * nOrientations2d        : 4
+ * nOrientations3dStraight: 8
+ * nOrientations3dDiagged : 8
+ * nPositions2d           : 56
+ * nPositions3dStraight   : 0
+ * nPositions3dDiagged    : 42
+ * nPositions Totales     : 98
+Mino : Y with 5 cells
+ * Principal representant : [0, 1, 2, 3, 7]
+ * nOrientations2d        : 8
+ * nOrientations3dStraight: 16
+ * nOrientations3dDiagged : 16
+ * nPositions2d           : 88
+ * nPositions3dStraight   : 0
+ * nPositions3dDiagged    : 48
+ * nPositions Totales     : 136
+Mino : l with 4 cells
+ * Principal representant : [0, 1, 2, 5]
+ * nOrientations2d        : 8
+ * nOrientations3dStraight: 16
+ * nOrientations3dDiagged : 16
+ * nPositions2d           : 160
+ * nPositions3dStraight   : 0
+ * nPositions3dDiagged    : 116
+ * nPositions Totales     : 276
+Mino : n with 4 cells
+ * Principal representant : [1, 2, 5, 6]
+ * nOrientations2d        : 4
+ * nOrientations3dStraight: 8
+ * nOrientations3dDiagged : 8
+ * nPositions2d           : 80
+ * nPositions3dStraight   : 0
+ * nPositions3dDiagged    : 76
+ * nPositions Totales     : 156
+Mino : t with 4 cells
+ * Principal representant : [0, 1, 2, 6]
+ * nOrientations2d        : 4
+ * nOrientations3dStraight: 8
+ * nOrientations3dDiagged : 8
+ * nPositions2d           : 80
+ * nPositions3dStraight   : 0
+ * nPositions3dDiagged    : 76
+ * nPositions Totales     : 156
+Mino : < with 3 cells
+ * Principal representant : [0, 1, 4]
+ * nOrientations2d        : 4
+ * nOrientations3dStraight: 8
+ * nOrientations3dDiagged : 8
+ * nPositions2d           : 120
+ * nPositions3dStraight   : 0
+ * nPositions3dDiagged    : 144
+ * nPositions Totales     : 264
+Found 2004 different positions covering the grid
+First level has 56 nodes
+ * Level 1: 384 solutions
+ * Level 2: 384 solutions
+ * Level 3: 522 solutions
+ * Level 4: 98 solutions
+ * Level 5: 0 solutions
+ * Level 6: 522 solutions
+ * Level 7: 0 solutions
+ * Level 8: 98 solutions
+ * Level 9: 444 solutions
+ * Level 10: 635 solutions
+ * Level 11: 264 solutions
+ * Level 12: 264 solutions
+ * Level 13: 635 solutions
+ * Level 14: 0 solutions
+ * Level 15: 14 solutions
+ * Level 16: 1106 solutions
+ * Level 17: 303 solutions
+ * Level 18: 340 solutions
+ * Level 19: 1106 solutions
+ * Level 20: 340 solutions
+ * Level 21: 303 solutions
+ * Level 22: 122 solutions
+ * Level 23: 1079 solutions
+ * Level 24: 41 solutions
+ * Level 25: 1079 solutions
+ * Level 26: 41 solutions
+ * Level 27: 1202 solutions
+ * Level 28: 187 solutions
+ * Level 29: 187 solutions
+ * Level 30: 538 solutions
+ * Level 31: 677 solutions
+ * Level 32: 677 solutions
+ * Level 33: 144 solutions
+ * Level 34: 825 solutions
+ * Level 35: 899 solutions
+ * Level 36: 825 solutions
+ * Level 37: 899 solutions
+ * Level 38: 132 solutions
+ * Level 39: 1490 solutions
+ * Level 40: 856 solutions
+ * Level 41: 124 solutions
+ * Level 42: 11 solutions
+ * Level 43: 856 solutions
+ * Level 44: 11 solutions
+ * Level 45: 124 solutions
+ * Level 46: 228 solutions
+ * Level 47: 415 solutions
+ * Level 48: 415 solutions
+ * Level 49: 274 solutions
+ * Level 50: 1168 solutions
+ * Level 51: 1168 solutions
+ * Level 52: 260 solutions
+ * Level 53: 1102 solutions
+ * Level 54: 395 solutions
+ * Level 55: 395 solutions
+ * Level 56: 112 solutions
+------------------------------------
+Found 26720 solutions in total!
+------------------------------------
+Temps d'exécution:
+ * Configuration : 0.008624 s
+ * Résolution    : 51.919 s
+------------------------------------
+ * Total         : 51.928 s
 

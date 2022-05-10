@@ -1,4 +1,8 @@
 
+# 2D
+004 = "tttWYUUFF**VtWWYUFF***VWWYYUUF***VVVLYnn<***LLLLnn<<***"
+037 = "l**********lll**********L**********LLLL****************"
+038 = "l**********l**********llYYYY********Y******************"
 # 3D
 081 = "llUUUltUnUlttFnLtFFFLLLLFYWn*YYWnYPPWYPPPVW*V*WVVV*****"
 082 = "VNPPYnPPPYnnVYY<nFtY<<tttVNUUFVNULFUULLLLVN*F*N*F******"

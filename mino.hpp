@@ -1,3 +1,6 @@
+#ifndef MINO_H
+#define MINO_H
+
 #include <vector>
 #include <assert.h>
 
@@ -63,3 +66,5 @@ public:
   void computeAllPositions(vector<vector<float>> &grid,vector<vector<int>> &positions,int minoIndex);
 
 };
+
+#endif // MINO_H

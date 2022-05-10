@@ -12,6 +12,13 @@ int nMinos = 0;
 int nCells = 1;
 ofstream outFile;
 string outFormat;
+/* Track variables */
+#ifdef TRACK
+unsigned long visitedNodes=0,covered=0,uncovered=0;
+unsigned long totalVisited=0,totalCovered=0,totalUncovered=0;
+ofstream outTrack;
+char sep=' ';
+#endif
 map<char,vector<int>> minos = {
     //Pentaminos
     {'F', {1,6,7,8,12}},
@@ -42,7 +49,15 @@ map<char,vector<int>> minos = {
 };
 
 int main(int argc,char *argv[]){
-
+/*
+  ::nCells = 5;
+  ::nMinos = 2;
+  dlx_cell *tete = buildStructure(KnuthExample);
+  vector<dlx_cell *> sol(3);
+  removeUselessPositions(tete);
+  int un = solve(tete,sol,0);
+  return un;
+*/
   clock_t debut,config,fin;
   debut = clock();
 
@@ -82,6 +97,9 @@ int main(int argc,char *argv[]){
     cout<<" * Filename: "<<filename<<", extension: "<<extension<<endl;
 #endif
   }
+#ifdef TRACK
+  ::outTrack.open("TrackTree.txt",ofstream::out);
+#endif
 
   /* Comupute the structures */
   vector<mino> minoArray;
@@ -94,15 +112,15 @@ int main(int argc,char *argv[]){
     nextMino.computeAllPositions(grid,Y,i+::nCells);
     minoArray.push_back(nextMino);
 #ifndef FAST
-    cout<<"Mino : "<<minosChar[i]<<" with "<<nextMino.size()<<" cells\n";
-    cout<<" * Principal representant : "<<nextMino.getIndices()<<endl;
-    cout<<" * nOrientations2d        : "<<nextMino.number2d()<<endl;
-    cout<<" * nOrientations3dStraight: "<<nextMino.number3dStraight()<<endl;
-    cout<<" * nOrientations3dDiagged : "<<nextMino.number3dDiagged()<<endl;
-    cout<<" * nPositions2d           : "<<nextMino.nPositions2d<<endl;
-    cout<<" * nPositions3dStraight   : "<<nextMino.nPositions3dStraight<<endl;
-    cout<<" * nPositions3dDiagged    : "<<nextMino.nPositions3dDiagged<<endl;
-    cout<<" * nPositions Totales     : "<<Y.size()-countPositions<<endl;
+    cout<<"Mino : "<<minosChar[i]<<" with "<<nextMino.size()<<" cells.";
+    cout<<" M0 = "<<nextMino.getIndices();
+    cout<<", n2d = "<<setw(2)<<nextMino.number2d();
+    cout<<", n3dS = "<<setw(2)<<nextMino.number3dStraight();
+    cout<<", n3dD = "<<setw(2)<<nextMino.number3dDiagged();
+    cout<<", nPos2d = "<<setw(3)<<nextMino.nPositions2d;
+    cout<<", nPos3dS = "<<setw(3)<<nextMino.nPositions3dStraight;
+    cout<<", nPos3dD = "<<setw(3)<<nextMino.nPositions3dDiagged;
+    cout<<", nPos = "<<setw(3)<<Y.size()-countPositions<<endl;
 #endif
     countPositions = Y.size();
   }
@@ -115,11 +133,13 @@ int main(int argc,char *argv[]){
 #ifndef FAST
   cout<<"Found "<<Y.size()<<" different positions covering the grid\n";
 #endif
+
   dlx_cell *head = buildStructure(Y);
 
-  /* Compute all the solutions */
+  // Compute all the solutions
   vector<dlx_cell *> solutions(::nMinos);
   config = clock();
+  removeUselessPositions(head);
   int nSolutions = solve(head,solutions,0);
   fin    = clock();
 
